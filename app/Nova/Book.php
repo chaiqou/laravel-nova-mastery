@@ -6,7 +6,6 @@ use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\File;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
-use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Trix;
@@ -29,14 +28,18 @@ class Book extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Book Title', 'title')->sortable()->required(),
-            Number::make('Pages', 'number_of_pages')->filterable()->hideFromIndex(),
+            Text::make('Book Title', 'title')
+                ->sortable()
+                ->rules('required', 'string')
+                ->creationRules('unique:books,title')
+                ->updateRules('unique:books,title, {{resourceId}}'),
+            Number::make('Pages', 'number_of_pages')->filterable()->hideFromIndex()->rules('required', 'integer', 'min:1', 'max:1000'),
             Number::make('Copies', 'number_of_copies')->sortable()->hideFromIndex(),
             Boolean::make('Featured', 'is_featured')->filterable(),
             Image::make('Cover')->path('covers'),
             File::make('PDF')->path('pdfs'),
             Trix::make('Blurb'),
-            URL::make('Purchase URL')->displayUsing(fn($value) => $value ? parse_url($value, PHP_URL_HOST) : null ),
+            URL::make('Purchase URL')->displayUsing(fn ($value) => $value ? parse_url($value, PHP_URL_HOST) : null),
 
         ];
     }
