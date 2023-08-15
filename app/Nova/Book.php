@@ -2,8 +2,10 @@
 
 namespace App\Nova;
 
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\File;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
@@ -22,24 +24,61 @@ class Book extends Resource
         'id',
         'title',
         'blurb',
+        'author.name',
     ];
 
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
-            Text::make('Book Title', 'title')
+            ID::make()
+                ->sortable(),
+
+            Image::make('Cover')
+                ->path('covers'),
+
+            Text::make('Title')
                 ->sortable()
-                ->rules('required', 'string')
+                ->rules('required', 'string', 'min:1', 'max:255')
                 ->creationRules('unique:books,title')
-                ->updateRules('unique:books,title, {{resourceId}}'),
-            Number::make('Pages', 'number_of_pages')->filterable()->hideFromIndex()->rules('required', 'integer', 'min:1', 'max:1000'),
-            Number::make('Copies', 'number_of_copies')->sortable()->hideFromIndex(),
-            Boolean::make('Featured', 'is_featured')->filterable(),
-            Image::make('Cover')->path('covers'),
-            File::make('PDF')->path('pdfs'),
-            Trix::make('Blurb'),
-            URL::make('Purchase URL')->displayUsing(fn ($value) => $value ? parse_url($value, PHP_URL_HOST) : null),
+                ->updateRules('unique:books,title,{{resourceId}}'),
+
+            BelongsTo::make('Author')
+                ->sortable(),
+
+            BelongsTo::make('Publisher')
+                ->filterable()
+                ->hideFromIndex(),
+
+            Trix::make('Blurb')
+                ->alwaysShow()
+                ->fullWidth(),
+
+            Number::make('Pages', 'number_of_pages')
+                ->filterable()
+                ->hideFromIndex()
+                ->rules('required', 'integer', 'min:1', 'max:10000'),
+
+            Number::make('Copies', 'number_of_copies')
+                ->sortable()
+                ->required()
+                ->help('The total number of copies of this book that the library owns.'),
+
+            Boolean::make('Featured', 'is_featured')
+                ->help('Whether this book is featured on the homepage.')
+                ->filterable(),
+
+            File::make('PDF')
+                ->path('pdfs'),
+
+            URL::make('Purchase URL')
+                ->displayUsing(fn ($value) => $value ? parse_url($value, PHP_URL_HOST) : null)
+                ->hideFromIndex(),
+
+            BelongsTo::make('Genre'),
+
+            BelongsTo::make('Subgenre', resource: Genre::class),
+
+            HasMany::make('Audio Recordings', 'recordings', resource: Recording::class),
 
         ];
     }

@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Validation\Rules\File;
 use Laravel\Nova\Fields\Audio;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -12,16 +13,21 @@ class Recording extends Resource
 {
     public static string $model = \App\Models\Recording::class;
 
-    public static $title = 'id';
+    public static $title = 'title';
 
     public static $search = [
         'id',
+        'title',
     ];
 
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
+            ID::make()
+                ->sortable(),
+
+            BelongsTo::make('Book')
+                ->searchable(),
 
             Text::make('Title')
                 ->sortable()
@@ -31,7 +37,7 @@ class Recording extends Resource
                 ->path('recordings')
                 ->showOnIndex()
                 ->creationRules('required')
-                ->rules(File::types('mp3', 'wav', 'ogg')->max(1024 * 20))
+                ->rules(File::types('mp3', 'wav', 'ogg')->max(1024 * 20)),
         ];
     }
 

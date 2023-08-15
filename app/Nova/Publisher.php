@@ -21,7 +21,8 @@ class Publisher extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
+            ID::make()
+                ->sortable(),
 
             Avatar::make('Logo')
                 ->nullable()

@@ -13,16 +13,20 @@ class Author extends Resource
 {
     public static string $model = \App\Models\Author::class;
 
-    public static $title = 'id';
+    public static $title = 'name';
 
     public static $search = [
         'id',
+        'name',
     ];
 
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
+
+            ID::make()
+                ->sortable(),
+
             Avatar::make('Avatar')
                 ->showWhenPeeking()
                 ->rounded()
@@ -38,6 +42,7 @@ class Author extends Resource
                 ->showWhenPeeking()
                 ->fullWidth()
                 ->rules('required', 'string', 'max:10000'),
+
         ];
     }
 
