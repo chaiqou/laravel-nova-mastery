@@ -17,10 +17,10 @@ class ReviewerResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => match($this->resource::class) {
+            'name' => match ($this->resource::class) {
                 User::class => $this->name,
-                default => throw new InvalidArgumentException("Unsupported reviewer type: " . $this->resource::class),
-            }
+                default => throw new InvalidArgumentException('Unsupported reviewer type: '.$this->resource::class),
+            },
         ];
     }
 }

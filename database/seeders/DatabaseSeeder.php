@@ -6,7 +6,6 @@ namespace Database\Seeders;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Customer;
-use App\Models\Genre;
 use App\Models\Publisher;
 use App\Models\Review;
 use App\Models\User;
@@ -28,7 +27,7 @@ class DatabaseSeeder extends Seeder
 
         $user = User::factory()->create([
             'name' => 'Luke Downing',
-            'email' => $this->command->ask("What email address would you like to use?", "luke@laracasts.com"),
+            'email' => $this->command->ask('What email address would you like to use?', 'luke@laracasts.com'),
         ]);
 
         Publisher::factory(10)->create();
@@ -44,14 +43,14 @@ class DatabaseSeeder extends Seeder
                 $pool->path(base_path())->command('php artisan db:seed BookSeeder');
             }
         })->start(function (string $type, string $output, int $key) {
-            $this->command->getOutput()->writeln(sprintf("Book %d output:", $key + 1));
+            $this->command->getOutput()->writeln(sprintf('Book %d output:', $key + 1));
             $this->command->getOutput()->writeln($output);
         });
 
         Review::factory()->for($user, 'reviewer')->forEachSequence(
             ...$authors
-            ->random(4)
-            ->map(fn(Author $author) => ['reviewable_id' => $author->getKey(), 'reviewable_type' => $author->getMorphClass(), 'stars' => null])
+                ->random(4)
+                ->map(fn (Author $author) => ['reviewable_id' => $author->getKey(), 'reviewable_type' => $author->getMorphClass(), 'stars' => null])
         )->create();
 
         $pool->wait();

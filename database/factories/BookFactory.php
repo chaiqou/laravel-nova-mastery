@@ -6,7 +6,6 @@ use App\Models\Author;
 use App\Models\Genre;
 use App\Models\Publisher;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 /**
@@ -31,7 +30,7 @@ class BookFactory extends Factory
             'number_of_pages' => fake()->numberBetween(100, 500),
             'number_of_copies' => fake()->numberBetween(1, 10),
             'is_featured' => false,
-            'cover' => '/covers/' . fake()->image('public/storage/covers', 300, 450, null, false),
+            'cover' => '/covers/'.fake()->image('public/storage/covers', 300, 450, null, false),
             'pdf' => null,
         ];
     }

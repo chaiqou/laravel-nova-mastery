@@ -7,7 +7,6 @@ use App\Models\Book;
 use App\Models\Publisher;
 use App\Models\Review;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
@@ -29,25 +28,25 @@ class RealDataSeeder extends Seeder
         Review::factory()
             ->by($user)
             ->of($nineteenEightyFour)
-            ->state(['stars' => 5, 'title' => 'An Old Book With Modern Meaning', 'body' => file_get_contents(__DIR__ . '/reviews/1984.txt')])
+            ->state(['stars' => 5, 'title' => 'An Old Book With Modern Meaning', 'body' => file_get_contents(__DIR__.'/reviews/1984.txt')])
             ->create();
 
         Review::factory()
             ->by($user)
             ->of($prideAndPrejudice)
-            ->state(['stars' => 4, 'title' => 'Everybody Should Read It At Least Once', 'body' => file_get_contents(__DIR__ . '/reviews/pride-and-prejudice.txt')])
+            ->state(['stars' => 4, 'title' => 'Everybody Should Read It At Least Once', 'body' => file_get_contents(__DIR__.'/reviews/pride-and-prejudice.txt')])
             ->create();
 
         Review::factory()
             ->by($user)
             ->of($theKillers)
-            ->state(['stars' => 4, 'title' => 'Certainly Not What I Thought It Would Be', 'body' => file_get_contents(__DIR__ . '/reviews/the-killers.txt')])
+            ->state(['stars' => 4, 'title' => 'Certainly Not What I Thought It Would Be', 'body' => file_get_contents(__DIR__.'/reviews/the-killers.txt')])
             ->create();
 
         Review::factory()
             ->by($user)
             ->of($theHobbit)
-            ->state(['stars' => 5, 'title' => 'So Much Better Than The Film', 'body' => file_get_contents(__DIR__ . '/reviews/the-hobbit.txt')])
+            ->state(['stars' => 5, 'title' => 'So Much Better Than The Film', 'body' => file_get_contents(__DIR__.'/reviews/the-hobbit.txt')])
             ->create();
 
         Book::whereKey([$nineteenEightyFour->getKey(), $prideAndPrejudice->getKey(), $theKillers->getKey(), $theHobbit->getKey()])->update(['is_featured' => true]);

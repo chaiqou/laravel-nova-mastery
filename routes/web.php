@@ -4,7 +4,6 @@ use App\Http\Resources\ReviewResource;
 use App\Models\Book;
 use App\Models\Review;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,5 +27,5 @@ Route::get('/', fn () => inertia('Landing', [
             ->latest()
             ->limit(4)
             ->get()
-    )
+    ),
 ]));
