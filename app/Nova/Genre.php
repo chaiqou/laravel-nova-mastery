@@ -56,23 +56,5 @@ class Genre extends Resource
         ];
     }
 
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
 
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    public function actions(NovaRequest $request): array
-    {
-        return [];
-    }
 }
