@@ -41,6 +41,21 @@ class Genre extends Resource
         ];
     }
 
+
+    public function fieldsForIndex(): array
+    {
+        return [
+            ID::make()->sortable(),
+            Text::make('Name' , function () {
+                if ($this->parent) {
+                    return "{$this->name}/{$this->parent->name}";
+                }
+
+                return $this->name;
+            })
+        ];
+    }
+
     public function cards(NovaRequest $request): array
     {
         return [];
