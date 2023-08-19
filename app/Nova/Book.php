@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\File;
+use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -82,10 +83,18 @@ class Book extends Resource
                 })
                 ->rules('required', Rule::exists('genres', 'id')->whereNull('parent_id')),
 
-            BelongsTo::make('Subgenre', resource: Genre::class)->relatableQueryUsing(function (NovaRequest $request, Builder $query) {
-                $query->whereNotNull('parent_id');
-            })
-                ->rules('required', Rule::exists('genres', 'id')->whereNotNull('parent_id')),
+            BelongsTo::make('Subgenre', resource: Genre::class)
+                ->dependsOn(['genre'],function (BelongsTo $field , NovaRequest $request, FormData $data) {
+                    if($data->genre === null){
+                        $field->hide();
+                    }
+
+                    $field->relatableQueryUsing(function (NovaRequest $request, Builder $query) use ($data) {
+                        $query->where('parent_id', $data->genre);
+                    })
+                        ->rules('required', Rule::exists('genres', 'id'));
+                }),
+
 
             HasMany::make('Audio Recordings', 'recordings', resource: Recording::class),
 
