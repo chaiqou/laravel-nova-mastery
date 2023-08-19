@@ -2,6 +2,8 @@
 
 namespace App\Nova;
 
+use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Validation\Rule;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\File;
@@ -74,9 +76,16 @@ class Book extends Resource
                 ->displayUsing(fn ($value) => $value ? parse_url($value, PHP_URL_HOST) : null)
                 ->hideFromIndex(),
 
-            BelongsTo::make('Genre'),
+            BelongsTo::make('Genre')
+                ->relatableQueryUsing(function (NovaRequest $request, Builder $query) {
+                    $query->whereNull('parent_id');
+                })
+                ->rules('required', Rule::exists('genres', 'id')->whereNull('parent_id')),
 
-            BelongsTo::make('Subgenre', resource: Genre::class),
+            BelongsTo::make('Subgenre', resource: Genre::class)->relatableQueryUsing(function (NovaRequest $request, Builder $query) {
+                $query->whereNotNull('parent_id');
+            })
+                ->rules('required', Rule::exists('genres', 'id')->whereNotNull('parent_id')),
 
             HasMany::make('Audio Recordings', 'recordings', resource: Recording::class),
 
